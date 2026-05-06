@@ -1,8 +1,4 @@
-<div
-  hx-get="{{ url_for('progress.progress_fragment', project_id=project.id) }}"
-  hx-trigger="every 5s"
-  hx-swap="outerHTML"
->
+<div>
   <p>status: <strong>{{ project.status }}</strong></p>
   <p>voortgang: {{ done }} van {{ total }} bronnen verwerkt ({{ pct }}%)</p>
 
