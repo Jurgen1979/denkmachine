@@ -84,10 +84,12 @@ def after_request(response):
 # blueprints registreren
 from src.routes.auth import auth_bp  # noqa: E402
 from src.routes.dashboard import dashboard_bp  # noqa: E402
+from src.routes.plan import plan_bp  # noqa: E402
 from src.routes.projects import projects_bp  # noqa: E402
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(dashboard_bp)
 app.register_blueprint(projects_bp)
+app.register_blueprint(plan_bp)
 
 logger.info("denkmachine opgestart")
