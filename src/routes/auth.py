@@ -1,11 +1,11 @@
 """authenticatie-routes: /login en /logout."""
 
-import hmac
 import os
 
 from flask import Blueprint, redirect, render_template, request, url_for
 from flask_login import login_required, login_user, logout_user
 from loguru import logger
+from werkzeug.security import check_password_hash
 
 from src.app_user import SingleUser
 
@@ -19,10 +19,10 @@ def login():
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "")
         expected_user = os.environ.get("DM_USER", "")
-        expected_password = os.environ.get("DM_PASSWORD", "")
+        expected_hash = os.environ.get("DM_PASSWORD_HASH", "")
 
-        user_ok = hmac.compare_digest(username, expected_user)
-        pass_ok = bool(expected_password) and hmac.compare_digest(password, expected_password)
+        user_ok = username == expected_user
+        pass_ok = bool(expected_hash) and check_password_hash(expected_hash, password)
 
         if user_ok and pass_ok:
             login_user(SingleUser())
