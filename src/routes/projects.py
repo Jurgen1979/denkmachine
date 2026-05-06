@@ -37,6 +37,8 @@ def new_project():
         project_dir = _PROJECTS_DIR / project_id
         for subfolder in ("inputs", "evidence", "drafts", "final"):
             (project_dir / subfolder).mkdir(parents=True, exist_ok=True)
+        (project_dir / "inputs" / "documents").mkdir(parents=True, exist_ok=True)
+        (project_dir / "ingested").mkdir(parents=True, exist_ok=True)
 
         project = Project(
             id=project_id,
