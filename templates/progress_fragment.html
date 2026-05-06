@@ -1,0 +1,49 @@
+<div
+  hx-get="{{ url_for('progress.progress_fragment', project_id=project.id) }}"
+  hx-trigger="every 5s"
+  hx-swap="outerHTML"
+>
+  <p>status: <strong>{{ project.status }}</strong></p>
+  <p>voortgang: {{ done }} van {{ total }} bronnen verwerkt ({{ pct }}%)</p>
+
+  {% if project.status == "failed" %}
+    <p>de pipeline is mislukt.</p>
+    {% if flags %}
+      <h3>vlaggen</h3>
+      <ul>
+        {% for flag in flags %}
+          <li>[{{ flag.severity }}] {{ flag.type }}: {{ flag.description }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    <p><button disabled title="herstart nog niet beschikbaar in deze versie">herstart pipeline</button></p>
+  {% endif %}
+
+  {% if calls %}
+    <h3>log (laatste {{ calls|length }})</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>tijdstip</th>
+          <th>agent</th>
+          <th>bron</th>
+          <th>duur (ms)</th>
+          <th>status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for call in calls %}
+          <tr>
+            <td>{{ call.timestamp[:19] }}</td>
+            <td>{{ call.agent_name }}</td>
+            <td>{{ call.role_name or "-" }}</td>
+            <td>{{ call.duration_ms if call.duration_ms is not none else "-" }}</td>
+            <td>{{ call.status or "-" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>nog geen log-entries</p>
+  {% endif %}
+</div>
