@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}upload – {{ project.id[:8] }}{% endblock %}
+{% block content %}
+<h1>bronnen uploaden</h1>
+<p>project: <code>{{ project.id[:8] }}</code> &nbsp;|&nbsp; status: <strong>{{ project.status }}</strong></p>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class="messages">
+      {% for msg in messages %}<li>{{ msg }}</li>{% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+{% if project.status == "plan_approved" %}
+
+  <section>
+    <h2>documenten</h2>
+    <form method="post" action="{{ url_for('upload.upload_files', project_id=project.id) }}" enctype="multipart/form-data">
+      <label for="documents">bestanden (pdf, docx, txt, md – max 50 MB per stuk):</label><br>
+      <input type="file" id="documents" name="documents" multiple accept=".pdf,.docx,.txt,.md"><br>
+      <button type="submit">uploaden</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>urls</h2>
+    <form method="post" action="{{ url_for('upload.upload_urls', project_id=project.id) }}">
+      <label for="urls">urls (één per regel):</label><br>
+      <textarea id="urls" name="urls" rows="5" cols="60">{% for url in urls %}{{ url }}
+{% endfor %}</textarea><br>
+      <button type="submit">opslaan</button>
+    </form>
+  </section>
+
+  {% if sources_hint %}
+  <section>
+    <h2>verwacht volgens plan</h2>
+    <ul>
+      {% for src in sources_hint %}
+        <li><strong>{{ src.type }}</strong>: {{ src.value }}{% if src.rationale %} – {{ src.rationale }}{% endif %}</li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  <section>
+    <h2>al geüpload</h2>
+    {% if documents %}
+      <h3>documenten</h3>
+      <ul>{% for doc in documents %}<li>{{ doc }}</li>{% endfor %}</ul>
+    {% else %}
+      <p>geen documenten geüpload</p>
+    {% endif %}
+    {% if urls %}
+      <h3>urls</h3>
+      <ul>{% for url in urls %}<li>{{ url }}</li>{% endfor %}</ul>
+    {% else %}
+      <p>geen urls opgeslagen</p>
+    {% endif %}
+  </section>
+
+  <section>
+    <form method="post" action="{{ url_for('upload.upload_start', project_id=project.id) }}">
+      <button type="submit" {% if not documents and not urls %}disabled{% endif %}>
+        start pipeline
+      </button>
+      {% if not documents and not urls %}
+        <small>upload minstens één document of url om te starten</small>
+      {% endif %}
+    </form>
+  </section>
+
+{% else %}
+  <p>pipeline loopt of is klaar.</p>
+  <p><a href="{{ url_for('progress.progress_view', project_id=project.id) }}">bekijk voortgang</a></p>
+{% endif %}
+{% endblock %}
