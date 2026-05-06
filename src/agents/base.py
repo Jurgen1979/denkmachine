@@ -39,6 +39,7 @@ class Agent(ABC):
         profile: str,
         user_prompt: str,
         system_prompt: str | None = None,
+        role_name: str | None = None,
     ) -> str:
         """Roep het llm aan, log de call en geef de tekst-response terug."""
         messages: list[dict] = []
@@ -51,6 +52,7 @@ class Agent(ABC):
             messages=messages,
             project_id=self.project_id,
             agent_name=self.agent_name,
+            role_name=role_name,
         )
 
         self._log_call(
