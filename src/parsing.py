@@ -2,12 +2,50 @@
 
 from pathlib import Path
 
+try:
+    from pypdf import PdfReader  # type: ignore[import-untyped]
+except ImportError:
+    PdfReader = None  # type: ignore[assignment,misc]
+
+try:
+    from docx import Document  # type: ignore[import-untyped]
+except ImportError:
+    Document = None  # type: ignore[assignment,misc]
+
 
 class ParsingFailure(Exception):
     """parsing van een document is mislukt."""
 
 
 _SUPPORTED_EXTENSIONS = {".pdf", ".docx", ".txt", ".md"}
+
+
+def _parse_pdf(file_path: Path) -> str:
+    """Parseer een pdf-bestand naar platte tekst via pypdf."""
+    if PdfReader is None:
+        raise ParsingFailure("pypdf is niet geïnstalleerd")
+    try:
+        reader = PdfReader(str(file_path))
+        pages = [page.extract_text() or "" for page in reader.pages]
+        return "\n\n".join(p.strip() for p in pages if p.strip())
+    except ParsingFailure:
+        raise
+    except Exception as e:
+        raise ParsingFailure(f"pdf-parsing mislukt voor {file_path.name}: {e}") from e
+
+
+def _parse_docx(file_path: Path) -> str:
+    """Parseer een docx-bestand naar platte tekst via python-docx."""
+    if Document is None:
+        raise ParsingFailure("python-docx is niet geïnstalleerd")
+    try:
+        doc = Document(str(file_path))
+        paragraphs = [p.text for p in doc.paragraphs if p.text.strip()]
+        return "\n\n".join(paragraphs)
+    except ParsingFailure:
+        raise
+    except Exception as e:
+        raise ParsingFailure(f"docx-parsing mislukt voor {file_path.name}: {e}") from e
 
 
 def parse_document(file_path: Path, source_id: str) -> str:
@@ -28,13 +66,7 @@ def parse_document(file_path: Path, source_id: str) -> str:
             raise ParsingFailure(f"leesfout voor {file_path.name}: {e}") from e
         return header + content
 
-    # pdf of docx via unstructured
-    try:
-        from unstructured.partition.auto import partition  # type: ignore[import-untyped]
+    if ext == ".pdf":
+        return header + _parse_pdf(file_path)
 
-        elements = partition(filename=str(file_path))
-        text = "\n\n".join(str(el) for el in elements if str(el).strip())
-    except Exception as e:
-        raise ParsingFailure(f"parsing mislukt voor {file_path.name}: {e}") from e
-
-    return header + text
+    return header + _parse_docx(file_path)

@@ -29,12 +29,16 @@
   </table>
 
   <h2>aanvullende vragen</h2>
-  <form method="post" action="{{ url_for('plan.plan_answers', project_id=project.id) }}">
+  <form method="post" action="{{ url_for('plan.plan_answers', project_id=project.id) }}" id="verfijn-form">
     {% for vraag in plan.clarifying_questions %}
       <label>{{ loop.index }}. {{ vraag }}</label>
       <textarea name="answer_{{ loop.index0 }}" rows="3"></textarea>
     {% endfor %}
-    <button type="submit">verfijn plan</button>
+    <button type="submit" id="verfijn-knop">verfijn plan</button>
+    <div class="bezig htmx-indicator" id="verfijn-indicator">
+      <span class="spinner"></span>
+      <span>plan wordt verfijnd, even geduld (1 – 2 minuten)...</span>
+    </div>
   </form>
 
 {% elif project.status == "plan_review" and plan %}
@@ -118,6 +122,13 @@
 
 {% elif project.status == "plan_approved" and plan %}
 
+  <p style="margin-bottom:1.5rem">
+    <a href="{{ url_for('upload.upload_view', project_id=project.id) }}"
+       style="display:inline-block;padding:0.6rem 1.4rem;background:#1a1a1a;color:#fff;text-decoration:none;border-radius:3px;font-size:0.95rem">
+      bronnen uploaden en ingest starten &rarr;
+    </a>
+  </p>
+
   <h2>plan (bevroren)</h2>
   <table>
     <tr><th>primaire categorie</th><td>{{ plan.primary_category }}</td></tr>
@@ -159,8 +170,6 @@
       </tbody>
     </table>
   {% endif %}
-
-  <p><em>plan bevroren. volgende stappen (upload, ingest) komen in sprint 3.</em></p>
 
 {% else %}
 

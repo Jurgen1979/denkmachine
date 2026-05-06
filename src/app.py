@@ -71,13 +71,18 @@ def before_request() -> None:
 
 @app.after_request
 def after_request(response):
-    """Log de requestgegevens na elke aanvraag."""
+    """Log de requestgegevens na elke aanvraag en zet cache-headers."""
     duration_ms = int((time.time() - g.start_time) * 1000)
     user = current_user.get_id() if current_user.is_authenticated else "anonymous"
     logger.info(
         f"request_id={g.request_id} method={request.method} path={request.path} "
         f"user={user} status={response.status_code} duration_ms={duration_ms}"
     )
+    # voorkom dat de browser of service worker html-paginas cachet
+    if "text/html" in response.content_type:
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
     return response
 
 

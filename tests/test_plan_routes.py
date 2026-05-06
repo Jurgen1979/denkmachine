@@ -107,7 +107,7 @@ def _write_plan_json(project_id: str, plan: dict) -> None:
         ("classifying", False, "ontleder werkt"),
         ("awaiting_clarification", True, "aanvullende vragen"),
         ("plan_review", True, "plan goedkeuren"),
-        ("plan_approved", True, "plan bevroren"),
+        ("plan_approved", True, "plan (bevroren)"),
     ],
 )
 def test_plan_page_renders_for_each_status(

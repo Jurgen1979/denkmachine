@@ -5,7 +5,7 @@
 {% if error %}
   <p class="error">{{ error }}</p>
 {% endif %}
-<form method="post" action="{{ url_for('projects.new_project') }}">
+<form method="post" action="{{ url_for('projects.new_project') }}" id="nieuw-form">
   <label for="user_question">vraag of opdracht</label>
   <textarea id="user_question" name="user_question" rows="6" required autofocus></textarea>
 
@@ -28,6 +28,10 @@
   <label for="client_name">klant (optioneel)</label>
   <input type="text" id="client_name" name="client_name">
 
-  <button type="submit">aanmaken en analyseren</button>
+  <button type="submit" id="submit-knop">aanmaken en analyseren</button>
+  <div class="bezig htmx-indicator" id="laad-indicator">
+    <span class="spinner"></span>
+    <span>analyse loopt, even geduld (1 – 2 minuten)...</span>
+  </div>
 </form>
 {% endblock %}

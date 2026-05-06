@@ -11,6 +11,7 @@ pyyaml==6.*
 ruff==0.6.*
 pytest==8.*
 pre-commit==3.*
-firecrawl-py==1.*
-unstructured[pdf,docx]==0.16.*
+firecrawl-py==4.25.*
+pypdf==6.*
+python-docx==1.*
 markdown==3.7.*
