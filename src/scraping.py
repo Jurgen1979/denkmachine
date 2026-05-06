@@ -21,11 +21,17 @@ def scrape_url(url: str, source_id: str) -> str:
     app = FirecrawlApp(api_key=api_key)
 
     try:
-        response = app.scrape_url(url, formats=["markdown"])
+        response = app.scrape_url(url, params={"formats": ["markdown"]})
     except Exception as e:
         raise ScrapingFailure(f"firecrawl-call mislukt voor {url}: {e}") from e
 
-    markdown = getattr(response, "markdown", None)
+    # firecrawl-py v1 geeft response['data'] al terug als dict, met "markdown"-key
+    if not isinstance(response, dict):
+        raise ScrapingFailure(
+            f"onverwachte response-vorm voor {url}: {type(response).__name__}"
+        )
+
+    markdown = response.get("markdown")
     if not markdown:
         raise ScrapingFailure(f"lege of ontbrekende markdown voor {url}")
 
