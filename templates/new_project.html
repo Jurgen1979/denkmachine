@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}nieuw project – denkmachine{% endblock %}
+{% block content %}
+<h1>nieuw project</h1>
+{% if error %}
+  <p class="error">{{ error }}</p>
+{% endif %}
+<form method="post" action="{{ url_for('projects.new_project') }}">
+  <label for="user_question">vraag of opdracht</label>
+  <textarea id="user_question" name="user_question" rows="6" required autofocus></textarea>
+  <label for="client_name">klant (optioneel)</label>
+  <input type="text" id="client_name" name="client_name">
+  <button type="submit">aanmaken</button>
+</form>
+{% endblock %}
