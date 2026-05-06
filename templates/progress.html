@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}voortgang – {{ project.id[:8] }}{% endblock %}
+{% block content %}
+<h1>ingest-voortgang</h1>
+<p>project: <code>{{ project.id[:8] }}</code></p>
+
+<div
+  hx-get="{{ url_for('progress.progress_fragment', project_id=project.id) }}"
+  hx-trigger="every 5s"
+  hx-swap="outerHTML"
+>
+  {% include "progress_fragment.html" %}
+</div>
+
+{% if project.status == "ingested" %}
+<section>
+  <h2>klaar</h2>
+  <p>alle bronnen zijn verwerkt. de evidence-review-stap (sprint 3b) is nog niet beschikbaar.</p>
+  <p><a href="{{ url_for('upload.upload_view', project_id=project.id) }}">terug naar upload</a></p>
+</section>
+{% endif %}
+
+{% endblock %}
