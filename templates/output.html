@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}eindrapport – {{ project.id[:8] }}{% endblock %}
+
+{% block content %}
+<h1>eindrapport</h1>
+
+{% if project.client_name %}
+<p style="color:#555;margin-top:-0.5rem">klant: {{ project.client_name }}</p>
+{% endif %}
+
+<p style="color:#555;margin-bottom:1.5rem">
+  <em>{{ project.user_question }}</em>
+</p>
+
+{% if project.status == "failed" %}
+<div style="padding:1rem;background:#fee;border:1px solid #c00;margin-bottom:1.5rem">
+  <strong>de analyse is mislukt.</strong>
+  {% if flags %}
+  <ul style="margin:0.5rem 0 0">
+    {% for flag in flags %}
+    <li>[{{ flag.severity }}] {{ flag.type }}: {{ flag.description }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+{% endif %}
+
+{% if flags and project.status == "done" %}
+<details style="margin-bottom:1.5rem">
+  <summary style="cursor:pointer;font-size:0.875rem;color:#555">
+    {{ flags|length }} aandachtspunt{{ "en" if flags|length != 1 else "" }} bij dit rapport
+  </summary>
+  <ul style="margin-top:0.5rem;font-size:0.875rem">
+    {% for flag in flags %}
+    <li>[{{ flag.severity }}] {{ flag.type }}{% if flag.section_id %} ({{ flag.section_id }}){% endif %}: {{ flag.description }}</li>
+    {% endfor %}
+  </ul>
+</details>
+{% endif %}
+
+{% if output_content %}
+<article style="max-width:72ch;line-height:1.7">
+  {{ output_content | markdown }}
+</article>
+{% else %}
+<p style="color:#888">output.md niet gevonden.</p>
+{% endif %}
+
+{% if action_plan_content %}
+<hr style="margin:2rem 0">
+<article style="max-width:72ch;line-height:1.7">
+  {{ action_plan_content | markdown }}
+</article>
+{% endif %}
+
+<div style="margin-top:2.5rem;display:flex;gap:1rem;flex-wrap:wrap">
+  <a href="{{ url_for('output.download_output', project_id=project.id) }}"
+     style="display:inline-block;padding:0.5rem 1.2rem;background:#1a1a1a;color:#fff;text-decoration:none;border-radius:3px">
+    download rapport (.md)
+  </a>
+  <a href="{{ url_for('dashboard.index') }}"
+     style="display:inline-block;padding:0.5rem 1.2rem;border:1px solid #aaa;text-decoration:none;border-radius:3px">
+    &larr; dashboard
+  </a>
+</div>
+{% endblock %}

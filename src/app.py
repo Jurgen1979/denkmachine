@@ -91,6 +91,7 @@ def after_request(response):
 from src.routes.auth import auth_bp  # noqa: E402
 from src.routes.dashboard import dashboard_bp  # noqa: E402
 from src.routes.evidence import evidence_bp  # noqa: E402
+from src.routes.output import output_bp  # noqa: E402
 from src.routes.plan import plan_bp  # noqa: E402
 from src.routes.progress import progress_bp  # noqa: E402
 from src.routes.projects import projects_bp  # noqa: E402
@@ -103,7 +104,22 @@ app.register_blueprint(plan_bp)
 app.register_blueprint(upload_bp)
 app.register_blueprint(progress_bp)
 app.register_blueprint(evidence_bp)
+app.register_blueprint(output_bp)
+
+
+def _markdown_filter(text: str) -> str:
+    """Zet markdown-tekst om naar veilige html voor in templates."""
+    import markdown as md
+    from markupsafe import Markup
+
+    html = md.markdown(
+        text,
+        extensions=["nl2br", "fenced_code", "tables"],
+    )
+    return Markup(html)
+
 
 app.jinja_env.filters["fromjson"] = json.loads
+app.jinja_env.filters["markdown"] = _markdown_filter
 
 logger.info("denkmachine opgestart")

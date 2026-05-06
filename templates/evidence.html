@@ -77,8 +77,24 @@
 {% endif %}
 
 {% if project.status == "evidence_approved" %}
+<section style="margin-top:2rem;padding:1rem;border:2px solid #1a1a1a;">
+  <h2>analyse starten</h2>
+  <p>de evidence is goedgekeurd. start de analyse-pipeline om het eindrapport te genereren.</p>
+  <form method="post" action="{{ url_for('output.analyse_start', project_id=project.id) }}">
+    <button type="submit">start analyse &rarr;</button>
+  </form>
+</section>
+{% endif %}
+
+{% if project.status in ("analysing", "drafting", "synthesising") %}
+<p style="margin-top:2rem;padding:1rem;background:#ffe;border:1px solid #aa0;">
+  analyse is bezig. <a href="{{ url_for('progress.progress_view', project_id=project.id) }}">bekijk voortgang</a>
+</p>
+{% endif %}
+
+{% if project.status == "done" %}
 <p style="margin-top:2rem;padding:1rem;background:#efe;border:1px solid #4a4;">
-  evidence is goedgekeurd. volgende stap (analist) komt in sprint 4.
+  analyse klaar. <a href="{{ url_for('output.output_view', project_id=project.id) }}">bekijk eindrapport &rarr;</a>
 </p>
 {% endif %}
 

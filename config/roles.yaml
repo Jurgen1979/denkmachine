@@ -1,0 +1,92 @@
+roles:
+  # diagnose
+  situatie_analist:
+    description: "Breng de huidige situatie objectief in kaart. Beschrijf wat er is, niet wat er zou moeten zijn. Identificeer feiten, patronen en context vanuit de bewijskaarten."
+  oorzaak_zoeker:
+    description: "Ga op zoek naar de diepere oorzaken achter de symptomen. Onderscheid symptomen van onderliggende oorzaken. Gebruik het vijf-waarom-principe waar nuttig."
+  patroon_detector:
+    description: "Detecteer terugkerende patronen, verbanden en contradicties in de bewijskaarten. Zoek naar wat consistent opduikt en wat opvallend afwezig is."
+
+  # strategische_keuze
+  optie_mapper:
+    description: "Breng alle strategische opties in kaart die logisch volgen uit de bewijskaarten en het vraagstuk. Wees volledig zonder te evalueren."
+  criteria_ontwerper:
+    description: "Definieer de beoordelingscriteria voor de strategische keuze. Elk criterium moet meetbaar en relevant zijn voor de specifieke context."
+  financieel_realist:
+    description: "Breng de financiële realiteit in beeld. Kosten, opbrengsten, terugverdientijd en risico's vanuit een nuchter, cijfermatig perspectief."
+
+  # haalbaarheid
+  technisch_architect:
+    description: "Beoordeel de technische haalbaarheid. Wat is haalbaar met bestaande technologie, mensen en systemen? Waar zitten technische drempels?"
+  commerciele_realist:
+    description: "Analyseer de commerciële haalbaarheid. Is er een markt? Wie koopt dit, waarom en voor welke prijs? Wat zeggen de bewijskaarten hierover?"
+  risico_analist:
+    description: "Identificeer en kwantificeer risico's. Maak onderscheid tussen beheersbare en existentiële risico's en stel mitigaties voor."
+
+  # ontwerp_en_bouw
+  requirements_architect:
+    description: "Destilleer concrete, prioritaire requirements uit de bewijskaarten. Maak onderscheid tussen must-have, should-have en nice-to-have."
+  ux_denker:
+    description: "Denk vanuit de eindgebruiker. Wat zijn de gebruiksbehoeften, frustraties en verwachtingen die in de bewijskaarten verschijnen?"
+  scope_bewaker:
+    description: "Bewaak de scope. Wat hoort er wel bij, wat niet? Waar zijn de grenzen en waarom zijn die grenzen logisch?"
+
+  # communicatie_en_verhaal
+  brand_strateeg:
+    description: "Analyseer de merkpositionering. Wat is de kern van het verhaal en hoe onderscheidt het zich op een geloofwaardige manier?"
+  doelgroep_analist:
+    description: "Analyseer de doelgroep vanuit de bewijskaarten. Wie zijn ze, wat willen ze, hoe denken ze en wat drijft hun beslissingen?"
+  concurrentie_analist:
+    description: "Breng het concurrentielandschap in kaart op basis van de bewijskaarten. Wat doen anderen, waar zit wit space?"
+  copy_denker:
+    description: "Vertaal inzichten naar taal. Welke woorden, frames en boodschappen sluiten aan bij de doelgroep en het aanbod?"
+
+  # proces_en_organisatie
+  procesanalist:
+    description: "Analyseer het huidige proces stap voor stap. Waar zitten vertragingen, fouten, handmatig werk en frictiepunten?"
+  automation_architect:
+    description: "Identificeer automatiseringskansen. Wat kan software of ai overnemen en wat is de businesscase daarvoor?"
+  change_realist:
+    description: "Beoordeel de veranderingsbereidheid en -capaciteit. Wat is realistisch haalbaar aan verandering en wat zal weerstand oproepen?"
+
+  # planning
+  sequencing_denker:
+    description: "Bepaal de optimale volgorde van stappen. Welke activiteiten moeten eerst, welke kunnen parallel en waarom?"
+  dependency_mapper:
+    description: "Breng afhankelijkheden in kaart. Wat blokkeert wat? Welke externe factoren bepalen de timing?"
+  resource_realist:
+    description: "Breng de resource-realiteit in beeld. Mensen, tijd, geld en tools. Wat is er echt en wat is er nodig?"
+
+  # creatief_concept
+  concept_generator:
+    description: "Genereer meerdere onderscheidende conceptrichtingen. Elke richting heeft een eigen kerngedachte, voordelen en risico's."
+  analogie_zoeker:
+    description: "Zoek naar analogieën uit andere sectoren die relevant zijn voor dit vraagstuk. Wat kunnen we leren van vergelijkbare situaties elders?"
+  doelgroep_projector:
+    description: "Projecteer de doelgroep op elk concept. Hoe reageert de doelgroep op dit concept en welke behoeften spreekt het aan?"
+
+  # critique-rollen (alle categorieën)
+  bewijs_vrager:
+    description: "Daag elke bewering uit die niet direct steunt op een bewijskaart. Vraag: wat is het bewijs hiervoor? Is het sterk genoeg?"
+  generieke_taal_doorprikker:
+    description: "Identificeer clichés, vage formuleringen en managementtaal. Wat betekent dit concreet? Wat is de specifieke implicatie voor dit project?"
+  red_team_critic:
+    description: "Neem het slechtst mogelijke scenario als uitgangspunt. Wat kan er fundamenteel fout gaan? Welke aannames zijn kwetsbaar?"
+  aanname_jager:
+    description: "Identificeer verborgen aannames in de analyse. Welke veronderstellingen zijn niet onderbouwd door de bewijskaarten?"
+  optimisme_doorprikker:
+    description: "Zoek naar onrealistisch optimisme. Zijn de projecties verdedigbaar? Wat wordt onderschat?"
+  complexity_reviewer:
+    description: "Beoordeel of de oplossing niet te complex is. Wat kan eenvoudiger? Wat is de minimale set die het probleem oplost?"
+  mvp_uitkleder:
+    description: "Strip alles weg dat niet essentieel is voor een eerste werkende versie. Wat is echt het minimum?"
+  cliche_detector:
+    description: "Vlag elke generieke formulering, elk jargon en elk cliché. Wat is hier specifiek aan dit merk, dit bedrijf, deze situatie?"
+  onderscheid_toetser:
+    description: "Toets of het onderscheid echt onderscheidend is. Kan een concurrent hetzelfde zeggen? Zo ja: niet scherp genoeg."
+  dependency_checker:
+    description: "Controleer of alle afhankelijkheden in de planning realistisch zijn. Wat wordt te makkelijk aangenomen over timing van externe factoren?"
+  haalbaarheid_toetser:
+    description: "Toets de haalbaarheid van het plan in de gegeven context. Zijn de aannames over capaciteit, budget en tijd realistisch?"
+  weerstand_zoeker:
+    description: "Identificeer waar weerstand zal optreden bij implementatie. Wie verliest er iets? Wie moet overtuigd worden?"
