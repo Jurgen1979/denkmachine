@@ -1,0 +1,48 @@
+profiles:
+  reasoning_model:
+    description: "sterk in gestructureerde redenering, planning, classificatie"
+    primary: anthropic/claude-opus-4-7
+    fallback: openai/gpt-5
+    max_input_tokens: 180000
+    max_output_tokens: 8000
+    temperature: 0.3
+
+  longform_model:
+    description: "sterk in lange, gestructureerde output"
+    primary: openai/gpt-5
+    fallback: google/gemini-2.5-pro
+    max_input_tokens: 300000
+    max_output_tokens: 16000
+    temperature: 0.5
+
+  critique_model:
+    description: "sterk in scherpe kritiek, detecteren van zwakke argumentatie"
+    primary: anthropic/claude-opus-4-7
+    fallback: google/gemini-2.5-pro
+    max_input_tokens: 180000
+    max_output_tokens: 4000
+    temperature: 0.4
+
+  writing_model:
+    description: "sterk in toon, register, stijl, jurgen-vlaams"
+    primary: anthropic/claude-opus-4-7
+    fallback: openai/gpt-5
+    max_input_tokens: 180000
+    max_output_tokens: 16000
+    temperature: 0.6
+
+  factcheck_model:
+    description: "groot context-window, sterk in feitelijke claims"
+    primary: google/gemini-2.5-pro
+    fallback: anthropic/claude-opus-4-7
+    max_input_tokens: 1000000
+    max_output_tokens: 4000
+    temperature: 0.2
+
+  creative_model:
+    description: "sterk in conceptgeneratie, analogieen, creatieve sprongen"
+    primary: anthropic/claude-opus-4-7
+    fallback: openai/gpt-5
+    max_input_tokens: 100000
+    max_output_tokens: 8000
+    temperature: 0.9
