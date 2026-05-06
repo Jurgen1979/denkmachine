@@ -24,6 +24,8 @@ def new_project():
     """Toon het formulier voor een nieuw project of verwerk de aanvraag."""
     if request.method == "POST":
         user_question = request.form.get("user_question", "").strip()
+        user_context = request.form.get("user_context", "").strip() or None
+        category_hint = request.form.get("category_hint", "").strip() or None
         client_name = request.form.get("client_name", "").strip() or None
 
         if not user_question:
@@ -32,7 +34,6 @@ def new_project():
         project_id = str(uuid.uuid4())
         now = datetime.now(timezone.utc).isoformat()
 
-        # maak project-folder aan met lege subfolders
         project_dir = _PROJECTS_DIR / project_id
         for subfolder in ("inputs", "evidence", "drafts", "final"):
             (project_dir / subfolder).mkdir(parents=True, exist_ok=True)
@@ -51,7 +52,26 @@ def new_project():
             session.commit()
 
         logger.info(f"nieuw project aangemaakt: id={project_id} status=created")
-        return redirect(url_for("dashboard.index"))
+
+        from src.agents.ontleder import OntlederAgent, OntlederFailure
+        from src.llm_client import LLMClient
+
+        try:
+            agent = OntlederAgent(LLMClient(), project_id)
+            agent.run(
+                user_question=user_question,
+                user_context=user_context,
+                category_hint=category_hint,
+            )
+        except OntlederFailure as exc:
+            logger.error(f"ontleder mislukt: project={project_id} fout={exc}", exc_info=True)
+        except Exception as exc:
+            logger.error(
+                f"onverwachte fout in ontleder: project={project_id} fout={exc}",
+                exc_info=True,
+            )
+
+        return redirect(url_for("plan.plan_view", project_id=project_id))
 
     return render_template("new_project.html")
 
