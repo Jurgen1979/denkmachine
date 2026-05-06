@@ -1,0 +1,121 @@
+"""progress-routes: live voortgang van de ingest-pipeline."""
+
+from pathlib import Path
+
+from flask import Blueprint, abort, render_template
+from flask_login import login_required
+
+from src.models import AgentCall, Flag, Project
+from src.state import get_session
+
+_BASE_DIR = Path(__file__).parent.parent.parent
+_PROJECTS_DIR = _BASE_DIR / "projects"
+
+progress_bp = Blueprint("progress", __name__)
+
+
+def _count_sources(project_id: str) -> tuple[int, int]:
+    """Geef (verwerkt, totaal) terug op basis van inputs en ingested-map.
+
+    totaal = aantal documenten + aantal urls
+    verwerkt = aantal src_xxx_*.md bestanden in ingested/
+    """
+    project_dir = _PROJECTS_DIR / project_id
+
+    docs_dir = project_dir / "inputs" / "documents"
+    doc_count = len(list(docs_dir.iterdir())) if docs_dir.exists() else 0
+
+    urls_file = project_dir / "inputs" / "urls.txt"
+    url_count = 0
+    if urls_file.exists():
+        url_count = len(
+            [u for u in urls_file.read_text(encoding="utf-8").splitlines() if u.strip()]
+        )
+
+    total = doc_count + url_count
+
+    ingested_dir = project_dir / "ingested"
+    done = 0
+    if ingested_dir.exists():
+        done = len(
+            [
+                f
+                for f in ingested_dir.iterdir()
+                if f.name.startswith("src_") and f.suffix == ".md"
+            ]
+        )
+
+    return done, total
+
+
+def _load_recent_calls(project_id: str, limit: int = 20) -> list:
+    """Laad de laatste agent_calls voor dit project."""
+    with get_session() as session:
+        calls = (
+            session.query(AgentCall)
+            .filter(AgentCall.project_id == project_id)
+            .order_by(AgentCall.id.desc())
+            .limit(limit)
+            .all()
+        )
+        return list(reversed(calls))
+
+
+def _load_flags(project_id: str) -> list:
+    """Laad alle vlaggen voor dit project."""
+    with get_session() as session:
+        flags = (
+            session.query(Flag)
+            .filter(Flag.project_id == project_id)
+            .order_by(Flag.id.desc())
+            .all()
+        )
+        return list(flags)
+
+
+@progress_bp.route("/project/<project_id>/progress")
+@login_required
+def progress_view(project_id: str):
+    """Toon de voortgangspagina met htmx-polling."""
+    with get_session() as session:
+        project = session.get(Project, project_id)
+
+    if project is None:
+        abort(404)
+
+    done, total = _count_sources(project_id)
+    pct = int((done / total) * 100) if total > 0 else 0
+
+    return render_template(
+        "progress.html",
+        project=project,
+        done=done,
+        total=total,
+        pct=pct,
+    )
+
+
+@progress_bp.route("/project/<project_id>/progress/fragment")
+@login_required
+def progress_fragment(project_id: str):
+    """Geef het htmx-fragment terug met status en log-entries."""
+    with get_session() as session:
+        project = session.get(Project, project_id)
+
+    if project is None:
+        abort(404)
+
+    done, total = _count_sources(project_id)
+    pct = int((done / total) * 100) if total > 0 else 0
+    calls = _load_recent_calls(project_id)
+    flags = _load_flags(project_id)
+
+    return render_template(
+        "progress_fragment.html",
+        project=project,
+        done=done,
+        total=total,
+        pct=pct,
+        calls=calls,
+        flags=flags,
+    )
