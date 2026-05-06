@@ -58,10 +58,10 @@ output_types:
         title: "technische haalbaarheid"
         purpose: "kan dit technisch"
       - id: commercial
-        title: "commerciele haalbaarheid"
+        title: "commerciële haalbaarheid"
         purpose: "is er markt en business case"
       - id: financial
-        title: "financiele haalbaarheid"
+        title: "financiële haalbaarheid"
         purpose: "kosten, baten, terugverdientijd"
       - id: risks
         title: "risico's en mitigaties"
@@ -205,7 +205,7 @@ output_types:
         purpose: "hoe verder met de gekozen richting"
     optional_sections:
       - id: references
-        title: "referenties en analogieen"
+        title: "referenties en analogieën"
     pdf_template: concept_brief.typ
     html_template: concept_brief.astro
     action_plan_style: exploratory_next_steps
