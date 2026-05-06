@@ -2,7 +2,7 @@
 {% block title %}voortgang – {{ project.id[:8] }}{% endblock %}
 {% block content %}
 <h1>pipeline-voortgang</h1>
-<p>project: <code>{{ project.id[:8] }}</code>{% if project.client_name %} &mdash; {{ project.client_name }}{% endif %}</p>
+<p>project: <code>{{ project.id[:8] }}</code>{% if project.client_name %} – {{ project.client_name }}{% endif %}</p>
 
 {% include "progress_fragment.html" %}
 
