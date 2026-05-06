@@ -75,6 +75,7 @@ class LLMClient:
         duration_ms: int,
         status: str = "ok",
         error_message: str | None = None,
+        role_name: str | None = None,
     ) -> None:
         """Schrijf een agent_calls-record naar de database."""
         from src.models import AgentCall
@@ -86,6 +87,7 @@ class LLMClient:
         record = AgentCall(
             project_id=project_id,
             agent_name=agent_name,
+            role_name=role_name,
             model_used=model_used,
             profile=profile,
             input_tokens=usage.get("prompt_tokens"),
@@ -107,6 +109,7 @@ class LLMClient:
         max_tokens: int | None = None,
         project_id: str = "ping",
         agent_name: str = "ping",
+        role_name: str | None = None,
     ) -> dict:
         """
         Stuur berichten naar het opgegeven model-profiel en geef het resultaat terug.
@@ -145,6 +148,7 @@ class LLMClient:
                 duration_ms=duration_ms,
                 status="error",
                 error_message=str(primary_exc),
+                role_name=role_name,
             )
             # een enkele fallback-poging, geen retry
             start = time.time()
@@ -166,6 +170,7 @@ class LLMClient:
             result=raw,
             duration_ms=duration_ms,
             status="ok",
+            role_name=role_name,
         )
 
         return {
