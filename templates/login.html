@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}inloggen – denkmachine{% endblock %}
+{% block content %}
+<h1>inloggen</h1>
+{% if error %}
+  <p class="error">{{ error }}</p>
+{% endif %}
+<form method="post" action="{{ url_for('auth.login') }}">
+  <label for="username">gebruikersnaam</label>
+  <input type="text" id="username" name="username" required autofocus>
+  <label for="password">wachtwoord</label>
+  <input type="password" id="password" name="password" required>
+  <button type="submit">inloggen</button>
+</form>
+{% endblock %}
