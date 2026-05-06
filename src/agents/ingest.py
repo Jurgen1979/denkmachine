@@ -11,9 +11,9 @@ from loguru import logger
 
 from src.agents.base import Agent
 from src.models import AgentCall, Flag, Project
-from src.parsing import ParsingFailure, parse_document
+from src.parsing import parse_document
 from src.prompts import load_prompt, render_prompt
-from src.scraping import ScrapingFailure, scrape_url
+from src.scraping import scrape_url
 from src.state import get_session
 
 _BASE_DIR = Path(__file__).parent.parent.parent
@@ -142,7 +142,7 @@ class IngestAgent(Agent):
                     f"source={source_id} file={doc_path.name}"
                 )
                 successful_sources.append((source_id, markdown))
-            except (ParsingFailure, Exception) as e:
+            except Exception as e:
                 duration_ms = int((time.time() - start) * 1000)
                 self._write_source_record(source_id, "local", "error", duration_ms, str(e))
                 logger.error(
@@ -174,7 +174,7 @@ class IngestAgent(Agent):
                     f"source={source_id} url={url}"
                 )
                 successful_sources.append((source_id, markdown))
-            except (ScrapingFailure, Exception) as e:
+            except Exception as e:
                 duration_ms = int((time.time() - start) * 1000)
                 self._write_source_record(source_id, "firecrawl", "error", duration_ms, str(e))
                 logger.error(
