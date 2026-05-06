@@ -1,1 +1,192 @@
-categories: {}
+categories:
+  diagnose:
+    display_name: "diagnose"
+    description: "audits van bestaande situaties. waarom werkt iets niet, wat zit er fout."
+    typical_questions:
+      - "audit onze website op positionering"
+      - "waarom converteren onze leads niet"
+      - "wat zijn de zwaktes in ons huidige proces"
+    relevant_claim_types:
+      - observation
+      - quote
+      - interpretation
+      - pain_point
+      - competitive_claim
+    analyst_roles:
+      - situatie_analist
+      - oorzaak_zoeker
+      - patroon_detector
+    critique_roles:
+      - bewijs_vrager
+      - generieke_taal_doorprikker
+    default_output_type: diagnose_report
+    typical_cost_eur: [10, 15]
+    cost_outlier_eur: 20
+
+  strategische_keuze:
+    display_name: "strategische keuze"
+    description: "welke richting kiezen we, welk segment, welk model past bij ons."
+    typical_questions:
+      - "welke markt vallen we eerst aan"
+      - "welke productlijn schalen we op"
+      - "freemium of premium model"
+    relevant_claim_types:
+      - external_fact
+      - opportunity_signal
+      - risk_signal
+      - assumption
+      - competitive_claim
+    analyst_roles:
+      - optie_mapper
+      - criteria_ontwerper
+      - financieel_realist
+    critique_roles:
+      - red_team_critic
+      - aanname_jager
+    default_output_type: strategic_choice_doc
+    typical_cost_eur: [12, 18]
+    cost_outlier_eur: 25
+
+  haalbaarheid:
+    display_name: "haalbaarheid"
+    description: "kan dit, is dit zinvol, validatie voor je begint."
+    typical_questions:
+      - "is een saas voor automatische brochures haalbaar"
+      - "kunnen we deze dienst rendabel productiseren"
+      - "is er markt voor dit nieuwe concept"
+    relevant_claim_types:
+      - external_fact
+      - hypothesis
+      - constraint
+      - risk_signal
+      - assumption
+    analyst_roles:
+      - technisch_architect
+      - commerciele_realist
+      - financieel_realist
+      - risico_analist
+    critique_roles:
+      - optimisme_doorprikker
+      - bewijs_vrager
+    default_output_type: feasibility_study
+    typical_cost_eur: [15, 25]
+    cost_outlier_eur: 30
+
+  ontwerp_en_bouw:
+    display_name: "ontwerp en bouw"
+    description: "hoe bouwen we dit, wat moet de spec zijn, welke architectuur."
+    typical_questions:
+      - "maak een prd voor deze nieuwe tool"
+      - "welke technische architectuur past bij dit systeem"
+      - "schrijf een developer briefing voor dit project"
+    relevant_claim_types:
+      - requirement
+      - constraint
+      - user_need
+      - reference_example
+      - assumption
+    analyst_roles:
+      - requirements_architect
+      - ux_denker
+      - technisch_architect
+      - scope_bewaker
+    critique_roles:
+      - complexity_reviewer
+      - mvp_uitkleder
+    default_output_type: prd
+    typical_cost_eur: [18, 25]
+    cost_outlier_eur: 30
+
+  communicatie_en_verhaal:
+    display_name: "communicatie en verhaal"
+    description: "hoe brengen we dit in de markt, wat is ons verhaal, welke woorden."
+    typical_questions:
+      - "hoe positioneren we dit bedrijf scherper"
+      - "schrijf een messaging framework"
+      - "welke website-structuur vertelt ons verhaal"
+    relevant_claim_types:
+      - observation
+      - quote
+      - interpretation
+      - competitive_claim
+      - user_need
+    analyst_roles:
+      - brand_strateeg
+      - doelgroep_analist
+      - concurrentie_analist
+      - copy_denker
+    critique_roles:
+      - cliche_detector
+      - onderscheid_toetser
+    default_output_type: positioning_doc
+    typical_cost_eur: [10, 15]
+    cost_outlier_eur: 20
+
+  proces_en_organisatie:
+    display_name: "proces en organisatie"
+    description: "hoe organiseren we dit, welk proces, wat automatiseren we."
+    typical_questions:
+      - "hoe stroomlijnen we ons offerteproces"
+      - "welke workflows automatiseren we"
+      - "hoe organiseren we dit team intern"
+    relevant_claim_types:
+      - observation
+      - process_step
+      - pain_point
+      - constraint
+    analyst_roles:
+      - procesanalist
+      - automation_architect
+      - change_realist
+    critique_roles:
+      - complexity_reviewer
+      - weerstand_zoeker
+    default_output_type: process_blueprint
+    typical_cost_eur: [12, 18]
+    cost_outlier_eur: 22
+
+  planning:
+    display_name: "planning"
+    description: "hoe lanceren we dit, in welke volgorde, wat is onze roadmap."
+    typical_questions:
+      - "maak een go-to-market plan voor dit product"
+      - "welke roadmap voor de komende 12 maanden"
+      - "in welke volgorde rollen we deze features uit"
+    relevant_claim_types:
+      - external_fact
+      - constraint
+      - risk_signal
+      - assumption
+    analyst_roles:
+      - sequencing_denker
+      - dependency_mapper
+      - resource_realist
+    critique_roles:
+      - dependency_checker
+      - haalbaarheid_toetser
+    default_output_type: gtm_plan
+    typical_cost_eur: [12, 18]
+    cost_outlier_eur: 22
+
+  creatief_concept:
+    display_name: "creatief concept"
+    description: "bedenk een nieuw, wat zou een interessante invalshoek zijn, conceptgeneratie."
+    typical_questions:
+      - "bedenk drie productconcepten in deze richting"
+      - "wat zou een memorable merknaam zijn"
+      - "geef me vijf invalshoeken voor deze campagne"
+    relevant_claim_types:
+      - reference_example
+      - opportunity_signal
+      - hypothesis
+      - user_need
+    analyst_roles:
+      - concept_generator
+      - analogie_zoeker
+      - doelgroep_projector
+    critique_roles:
+      - cliche_detector
+      - onderscheid_toetser
+    default_output_type: concept_brief
+    typical_cost_eur: [10, 15]
+    cost_outlier_eur: 20
