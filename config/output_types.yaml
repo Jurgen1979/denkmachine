@@ -1,1 +1,211 @@
-output_types: {}
+output_types:
+  diagnose_report:
+    display_name: "diagnose-rapport"
+    required_sections:
+      - id: situation
+        title: "huidige situatie"
+        purpose: "feitelijk vertrekpunt"
+      - id: findings
+        title: "bevindingen"
+        purpose: "wat valt op"
+      - id: causes
+        title: "vermoedelijke oorzaken"
+        purpose: "waarom is dit zo"
+      - id: priorities
+        title: "prioriteiten"
+        purpose: "wat eerst aanpakken"
+    optional_sections:
+      - id: opportunities
+        title: "kansen"
+      - id: risks
+        title: "risico's"
+    pdf_template: diagnose_report.typ
+    html_template: diagnose_report.astro
+    action_plan_style: prioritized_list
+
+  strategic_choice_doc:
+    display_name: "keuzedocument"
+    required_sections:
+      - id: context
+        title: "context en kader"
+        purpose: "waarom moet er gekozen worden"
+      - id: options
+        title: "opties"
+        purpose: "welke keuzes liggen voor"
+      - id: criteria
+        title: "beoordelingscriteria"
+        purpose: "waarop beoordelen we"
+      - id: evaluation
+        title: "afweging"
+        purpose: "hoe scoort elke optie"
+      - id: recommendation
+        title: "aanbeveling"
+        purpose: "welke optie en waarom"
+    optional_sections:
+      - id: risks
+        title: "risico's per optie"
+    pdf_template: strategic_choice_doc.typ
+    html_template: strategic_choice_doc.astro
+    action_plan_style: decision_with_next_steps
+
+  feasibility_study:
+    display_name: "haalbaarheidsstudie"
+    required_sections:
+      - id: context
+        title: "context en aannames"
+        purpose: "waarover gaat de studie"
+      - id: technical
+        title: "technische haalbaarheid"
+        purpose: "kan dit technisch"
+      - id: commercial
+        title: "commerciele haalbaarheid"
+        purpose: "is er markt en business case"
+      - id: financial
+        title: "financiele haalbaarheid"
+        purpose: "kosten, baten, terugverdientijd"
+      - id: risks
+        title: "risico's en mitigaties"
+        purpose: "wat kan fout gaan"
+      - id: conclusion
+        title: "conclusie"
+        purpose: "doorgaan, niet doorgaan, of met voorwaarden"
+    optional_sections:
+      - id: alternatives
+        title: "alternatieven"
+    pdf_template: feasibility_study.typ
+    html_template: feasibility_study.astro
+    action_plan_style: go_no_go_with_conditions
+
+  prd:
+    display_name: "product requirements document"
+    required_sections:
+      - id: context
+        title: "context en doel"
+        purpose: "welk probleem lossen we op"
+      - id: users
+        title: "gebruikers en behoeften"
+        purpose: "voor wie bouwen we dit"
+      - id: requirements
+        title: "functionele requirements"
+        purpose: "wat moet het systeem doen"
+      - id: non_functional
+        title: "niet-functionele eisen"
+        purpose: "hoe goed moet het werken"
+      - id: architecture
+        title: "architectuur en componenten"
+        purpose: "hoe is het opgebouwd"
+      - id: scope
+        title: "scope"
+        purpose: "wat wel, wat niet"
+      - id: mvp
+        title: "mvp"
+        purpose: "minimale set voor v1"
+    optional_sections:
+      - id: risks
+        title: "risico's en open vragen"
+    pdf_template: prd.typ
+    html_template: prd.astro
+    action_plan_style: build_roadmap
+
+  positioning_doc:
+    display_name: "positioneringsdocument"
+    required_sections:
+      - id: audience
+        title: "doelgroep"
+        purpose: "wie spreken we aan"
+      - id: problem
+        title: "probleem"
+        purpose: "welk probleem lossen we op"
+      - id: promise
+        title: "belofte"
+        purpose: "wat beloven we"
+      - id: differentiation
+        title: "onderscheid"
+        purpose: "hoe verschillen we van anderen"
+      - id: proof
+        title: "bewijspunten"
+        purpose: "waarom geloven we de belofte"
+      - id: messaging
+        title: "kernboodschappen"
+        purpose: "hoe verwoorden we het"
+    optional_sections:
+      - id: tone_of_voice
+        title: "toon en register"
+    pdf_template: positioning_doc.typ
+    html_template: positioning_doc.astro
+    action_plan_style: messaging_rollout
+
+  process_blueprint:
+    display_name: "procesblauwdruk"
+    required_sections:
+      - id: current_state
+        title: "huidig proces"
+        purpose: "hoe loopt het nu"
+      - id: pain_points
+        title: "knelpunten"
+        purpose: "waar zit de frictie"
+      - id: desired_state
+        title: "gewenst proces"
+        purpose: "hoe zou het moeten lopen"
+      - id: automation
+        title: "automatiseringskansen"
+        purpose: "wat kan ai of automation doen"
+      - id: implementation
+        title: "implementatie"
+        purpose: "hoe komen we daar"
+    optional_sections:
+      - id: change_management
+        title: "change management"
+    pdf_template: process_blueprint.typ
+    html_template: process_blueprint.astro
+    action_plan_style: phased_rollout
+
+  gtm_plan:
+    display_name: "go-to-market plan"
+    required_sections:
+      - id: context
+        title: "context"
+        purpose: "product, markt, moment"
+      - id: positioning
+        title: "positionering en doelgroep"
+        purpose: "voor wie en hoe gepositioneerd"
+      - id: channels
+        title: "kanalen en tactieken"
+        purpose: "waar bereiken we de doelgroep"
+      - id: timeline
+        title: "fasering"
+        purpose: "wanneer wat"
+      - id: resources
+        title: "resources"
+        purpose: "wat is nodig om dit uit te voeren"
+      - id: metrics
+        title: "succes-metrics"
+        purpose: "hoe meten we resultaat"
+    optional_sections:
+      - id: risks
+        title: "risico's"
+    pdf_template: gtm_plan.typ
+    html_template: gtm_plan.astro
+    action_plan_style: phased_rollout
+
+  concept_brief:
+    display_name: "concept-briefing"
+    required_sections:
+      - id: brief
+        title: "opdracht en kader"
+        purpose: "waarover gaat het concept"
+      - id: directions
+        title: "concept-richtingen"
+        purpose: "drie of meer uitgewerkte richtingen, elk met titel, kerngedachte, sterk punt, zwak punt"
+      - id: recommendation
+        title: "aanbeveling"
+        purpose: "welke richting heeft potentie en waarom"
+      - id: next_steps
+        title: "vervolgstappen"
+        purpose: "hoe verder met de gekozen richting"
+    optional_sections:
+      - id: references
+        title: "referenties en analogieen"
+    pdf_template: concept_brief.typ
+    html_template: concept_brief.astro
+    action_plan_style: exploratory_next_steps
