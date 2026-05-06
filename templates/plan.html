@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% block title %}plan {{ project.id[:8] }} – denkmachine{% endblock %}
+{% block content %}
+
+<h1>plan <code>{{ project.id[:8] }}</code></h1>
+<p>status: <strong>{{ project.status }}</strong></p>
+
+{% if has_cost_warning %}
+  <p style="background:#fdd;border:1px solid #c00;padding:0.5em;color:#900;">
+    waarschuwing: de geschatte kost ligt boven de hard cap van &euro;{{ hard_cap|int }}.
+    controleer het plan kritisch voor je goedkeurt.
+  </p>
+{% endif %}
+
+{% if project.status in ("created", "classifying") %}
+
+  <meta http-equiv="refresh" content="10">
+  <p>de ontleder werkt aan dit project. deze pagina ververst automatisch.</p>
+
+{% elif project.status == "awaiting_clarification" and plan %}
+
+  <h2>interpretatie tot nu toe</h2>
+  <table>
+    <tr><th>categorie</th><td>{{ plan.primary_category }}</td></tr>
+    <tr><th>zekerheid</th><td>{{ "%.0f"|format(plan.category_confidence * 100) }}%</td></tr>
+    <tr><th>scope-helderheid</th><td>{{ "%.0f"|format(plan.scope_clarity_score * 100) }}%</td></tr>
+    <tr><th>doel</th><td>{{ plan.interpreted_goal }}</td></tr>
+    <tr><th>scope</th><td>{{ plan.scope }}</td></tr>
+  </table>
+
+  <h2>aanvullende vragen</h2>
+  <form method="post" action="{{ url_for('plan.plan_answers', project_id=project.id) }}">
+    {% for vraag in plan.clarifying_questions %}
+      <label>{{ loop.index }}. {{ vraag }}</label>
+      <textarea name="answer_{{ loop.index0 }}" rows="3"></textarea>
+    {% endfor %}
+    <button type="submit">verfijn plan</button>
+  </form>
+
+{% elif project.status == "plan_review" and plan %}
+
+  <h2>plan</h2>
+  <table>
+    <tr><th>primaire categorie</th><td>{{ plan.primary_category }}</td></tr>
+    {% if plan.secondary_category %}
+      <tr><th>secundaire categorie</th><td>{{ plan.secondary_category }}</td></tr>
+    {% endif %}
+    <tr><th>categorie-zekerheid</th><td>{{ "%.0f"|format(plan.category_confidence * 100) }}%</td></tr>
+    <tr><th>scope-helderheid</th><td>{{ "%.0f"|format(plan.scope_clarity_score * 100) }}%</td></tr>
+    <tr><th>doel</th><td>{{ plan.interpreted_goal }}</td></tr>
+    <tr><th>scope</th><td>{{ plan.scope }}</td></tr>
+    <tr><th>output-type</th><td>{{ plan.output_type }}</td></tr>
+    <tr><th>geschatte doorlooptijd</th><td>{{ plan.estimated_runtime_minutes|int }} minuten</td></tr>
+    <tr><th>geschatte kost</th><td>&euro;{{ "%.2f"|format(plan.estimated_cost_eur) }}</td></tr>
+  </table>
+
+  {% if plan.assumptions %}
+    <h3>aannames</h3>
+    <ul>{% for a in plan.assumptions %}<li>{{ a }}</li>{% endfor %}</ul>
+  {% endif %}
+
+  {% if plan.missing_inputs %}
+    <h3>ontbrekende inputs</h3>
+    <ul>{% for m in plan.missing_inputs %}<li>{{ m }}</li>{% endfor %}</ul>
+  {% endif %}
+
+  <h3>rolpakket</h3>
+  <p>analisten: {{ plan.active_role_pack.analyst_roles | join(", ") }}</p>
+  <p>critici: {{ plan.active_role_pack.critique_roles | join(", ") }}</p>
+
+  <h3>onderzoeksplan</h3>
+
+  {% if plan.research_plan.interview_questions %}
+    <h4>interviewvragen</h4>
+    <ol>{% for q in plan.research_plan.interview_questions %}<li>{{ q }}</li>{% endfor %}</ol>
+  {% endif %}
+
+  {% if plan.research_plan.sources_to_research %}
+    <h4>te onderzoeken bronnen</h4>
+    <ul>
+      {% for src in plan.research_plan.sources_to_research %}
+        <li><strong>{{ src.type }}</strong>: {{ src.value }} &ndash; {{ src.rationale }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if plan.research_plan.frameworks_to_apply %}
+    <h4>frameworks</h4>
+    <ul>{% for f in plan.research_plan.frameworks_to_apply %}<li>{{ f }}</li>{% endfor %}</ul>
+  {% endif %}
+
+  {% if plan.research_plan.report_sections %}
+    <h4>rapport-secties</h4>
+    <table>
+      <thead><tr><th>id</th><th>titel</th><th>doel</th><th>woorden</th></tr></thead>
+      <tbody>
+        {% for sec in plan.research_plan.report_sections %}
+          <tr>
+            <td><code>{{ sec.id }}</code></td>
+            <td>{{ sec.title }}</td>
+            <td>{{ sec.purpose }}</td>
+            <td>{{ sec.estimated_length_words }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+
+  <p>
+    <form method="post" action="{{ url_for('plan.plan_approve', project_id=project.id) }}" style="display:inline">
+      <button type="submit">plan goedkeuren</button>
+    </form>
+    &nbsp;
+    <form method="post" action="{{ url_for('plan.plan_revise', project_id=project.id) }}" style="display:inline">
+      <button type="submit">plan aanpassen</button>
+    </form>
+  </p>
+
+{% elif project.status == "plan_approved" and plan %}
+
+  <h2>plan (bevroren)</h2>
+  <table>
+    <tr><th>primaire categorie</th><td>{{ plan.primary_category }}</td></tr>
+    {% if plan.secondary_category %}
+      <tr><th>secundaire categorie</th><td>{{ plan.secondary_category }}</td></tr>
+    {% endif %}
+    <tr><th>categorie-zekerheid</th><td>{{ "%.0f"|format(plan.category_confidence * 100) }}%</td></tr>
+    <tr><th>scope-helderheid</th><td>{{ "%.0f"|format(plan.scope_clarity_score * 100) }}%</td></tr>
+    <tr><th>doel</th><td>{{ plan.interpreted_goal }}</td></tr>
+    <tr><th>scope</th><td>{{ plan.scope }}</td></tr>
+    <tr><th>output-type</th><td>{{ plan.output_type }}</td></tr>
+    <tr><th>geschatte doorlooptijd</th><td>{{ plan.estimated_runtime_minutes|int }} minuten</td></tr>
+    <tr><th>geschatte kost</th><td>&euro;{{ "%.2f"|format(plan.estimated_cost_eur) }}</td></tr>
+  </table>
+
+  {% if plan.assumptions %}
+    <h3>aannames</h3>
+    <ul>{% for a in plan.assumptions %}<li>{{ a }}</li>{% endfor %}</ul>
+  {% endif %}
+
+  <h3>rolpakket</h3>
+  <p>analisten: {{ plan.active_role_pack.analyst_roles | join(", ") }}</p>
+  <p>critici: {{ plan.active_role_pack.critique_roles | join(", ") }}</p>
+
+  <h3>onderzoeksplan</h3>
+
+  {% if plan.research_plan.report_sections %}
+    <table>
+      <thead><tr><th>id</th><th>titel</th><th>doel</th><th>woorden</th></tr></thead>
+      <tbody>
+        {% for sec in plan.research_plan.report_sections %}
+          <tr>
+            <td><code>{{ sec.id }}</code></td>
+            <td>{{ sec.title }}</td>
+            <td>{{ sec.purpose }}</td>
+            <td>{{ sec.estimated_length_words }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+
+  <p><em>plan bevroren. volgende stappen (upload, ingest) komen in sprint 3.</em></p>
+
+{% else %}
+
+  <p>geen plandata beschikbaar voor status "{{ project.status }}".</p>
+
+{% endif %}
+
+<p><a href="{{ url_for('dashboard.index') }}">&larr; terug naar dashboard</a></p>
+
+{% endblock %}
