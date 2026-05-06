@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}dashboard – denkmachine{% endblock %}
+{% block content %}
+<h1>dashboard</h1>
+<a href="{{ url_for('projects.new_project') }}">+ nieuw project</a>
+{% if projects %}
+  <table>
+    <thead>
+      <tr>
+        <th>id</th>
+        <th>aangemaakt</th>
+        <th>vraag</th>
+        <th>status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for project in projects %}
+      <tr>
+        <td><code>{{ project.id[:8] }}</code></td>
+        <td>{{ project.created_at[:19].replace("T", " ") }}</td>
+        <td>{{ project.user_question[:80] }}{% if project.user_question|length > 80 %}...{% endif %}</td>
+        <td>{{ project.status }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p class="empty">nog geen projecten. maak er een aan via de link hierboven.</p>
+{% endif %}
+{% endblock %}
