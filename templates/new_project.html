@@ -8,8 +8,26 @@
 <form method="post" action="{{ url_for('projects.new_project') }}">
   <label for="user_question">vraag of opdracht</label>
   <textarea id="user_question" name="user_question" rows="6" required autofocus></textarea>
+
+  <label for="user_context">extra context (optioneel)</label>
+  <textarea id="user_context" name="user_context" rows="4"></textarea>
+
+  <label for="category_hint">categorie-hint (optioneel)</label>
+  <select id="category_hint" name="category_hint">
+    <option value="">geen hint</option>
+    <option value="diagnose">diagnose</option>
+    <option value="strategische_keuze">strategische keuze</option>
+    <option value="haalbaarheid">haalbaarheid</option>
+    <option value="ontwerp_en_bouw">ontwerp en bouw</option>
+    <option value="communicatie_en_verhaal">communicatie en verhaal</option>
+    <option value="proces_en_organisatie">proces en organisatie</option>
+    <option value="planning">planning</option>
+    <option value="creatief_concept">creatief concept</option>
+  </select>
+
   <label for="client_name">klant (optioneel)</label>
   <input type="text" id="client_name" name="client_name">
-  <button type="submit">aanmaken</button>
+
+  <button type="submit">aanmaken en analyseren</button>
 </form>
 {% endblock %}
