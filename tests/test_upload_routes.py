@@ -124,7 +124,7 @@ def test_upload_start_changes_status(logged_in_client):
     docs_dir = _PROJECTS_DIR / project_id / "inputs" / "documents"
     (docs_dir / "doc.txt").write_text("inhoud", encoding="utf-8")
 
-    with patch("src.routes.upload.start_ingest_thread"):
+    with patch("src.routes.upload.start_pipeline_thread"):
         response = logged_in_client.post(f"/project/{project_id}/upload/start")
 
     assert response.status_code == 302

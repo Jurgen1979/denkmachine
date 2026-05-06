@@ -198,7 +198,7 @@ class IngestAgent(Agent):
         sources_text = "\n\n".join(
             f"## {sid}\n\n{md}" for sid, md in successful_sources
         )
-        prompt_template = load_prompt("ingest_bundle")
+        prompt_template = load_prompt("bundle_prompt")
         user_prompt = render_prompt(
             prompt_template,
             {"research_plan": research_plan_text, "sources": sources_text},

@@ -1,0 +1,80 @@
+<div id="evidence-tabel">
+  <p>{{ cards|length }} kaart(en) gevonden.</p>
+  {% if cards %}
+  <table>
+    <thead>
+      <tr>
+        <th>id</th>
+        <th>source_id</th>
+        <th>claim_type</th>
+        <th>claim</th>
+        <th>confidence</th>
+        <th>tags</th>
+        <th>status</th>
+        <th>acties</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for card in cards %}
+      <tr>
+        <td><code>{{ card.id }}</code></td>
+        <td>{{ card.source_id }}</td>
+        <td>{{ card.claim_type }}</td>
+        <td>{{ card.claim[:200] }}{% if card.claim|length > 200 %}...{% endif %}</td>
+        <td>{{ card.confidence }}</td>
+        <td>
+          {% if card.tags %}
+            {% set tag_list = card.tags | tojson | fromjson %}
+            {{ tag_list | join(", ") }}
+          {% else %}–{% endif %}
+        </td>
+        <td>{{ card.human_status }}</td>
+        <td>
+          {% if card.human_status != "approved" %}
+          <form method="post" action="{{ url_for('evidence.evidence_approve', project_id=card.project_id, ev_id=card.id) }}" style="display:inline">
+            <button type="submit">approve</button>
+          </form>
+          {% endif %}
+          {% if card.human_status != "rejected" %}
+          <form method="post" action="{{ url_for('evidence.evidence_reject', project_id=card.project_id, ev_id=card.id) }}" style="display:inline">
+            <button type="submit">reject</button>
+          </form>
+          {% endif %}
+          <details style="display:inline-block">
+            <summary>edit</summary>
+            <form method="post" action="{{ url_for('evidence.evidence_edit', project_id=card.project_id, ev_id=card.id) }}">
+              <label>claim <input type="text" name="claim" value="{{ card.claim }}" style="width:30em"></label><br>
+              <label>claim_type
+                <select name="claim_type">
+                  {% for ct in ["observation","quote","interpretation","hypothesis","external_fact","competitive_claim","requirement","constraint","assumption","risk_signal","opportunity_signal","process_step","pain_point","user_need","reference_example"] %}
+                    <option value="{{ ct }}" {% if ct == card.claim_type %}selected{% endif %}>{{ ct }}</option>
+                  {% endfor %}
+                </select>
+              </label><br>
+              <label>confidence
+                <select name="confidence">
+                  {% for cf in ["high","medium","low"] %}
+                    <option value="{{ cf }}" {% if cf == card.confidence %}selected{% endif %}>{{ cf }}</option>
+                  {% endfor %}
+                </select>
+              </label><br>
+              <label>note <input type="text" name="note" value="{{ card.human_note or '' }}" style="width:30em"></label><br>
+              <button type="submit">opslaan</button>
+            </form>
+          </details>
+          <details style="display:inline-block">
+            <summary>note</summary>
+            <form method="post" action="{{ url_for('evidence.evidence_note', project_id=card.project_id, ev_id=card.id) }}">
+              <input type="text" name="note" value="{{ card.human_note or '' }}" style="width:25em">
+              <button type="submit">opslaan</button>
+            </form>
+          </details>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>geen kaarten gevonden met de huidige filters.</p>
+  {% endif %}
+</div>

@@ -179,3 +179,14 @@ button:disabled {
   background: #888;
   cursor: not-allowed;
 }
+
+/* spinner binnenin een knop */
+.spinner-knop {
+  width: 0.85rem;
+  height: 0.85rem;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: draaien 0.75s linear infinite;
+  flex-shrink: 0;
+}

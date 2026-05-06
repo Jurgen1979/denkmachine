@@ -3,7 +3,7 @@
 {% block content %}
 
 <h1>plan <code>{{ project.id[:8] }}</code></h1>
-<p>status: <strong>{{ project.status }}</strong></p>
+<p>klant: {{ project.client_name or "–" }} &nbsp;|&nbsp; status: <strong>{{ project.status }}</strong></p>
 
 {% if has_cost_warning %}
   <p style="background:#fdd;border:1px solid #c00;padding:0.5em;color:#900;">

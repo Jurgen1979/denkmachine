@@ -2,7 +2,7 @@
 {% block title %}upload – {{ project.id[:8] }}{% endblock %}
 {% block content %}
 <h1>bronnen uploaden</h1>
-<p>project: <code>{{ project.id[:8] }}</code> &nbsp;|&nbsp; status: <strong>{{ project.status }}</strong></p>
+<p>project: <code>{{ project.id[:8] }}</code> &nbsp;|&nbsp; klant: {{ project.client_name or "–" }} &nbsp;|&nbsp; status: <strong>{{ project.status }}</strong></p>
 
 {% with messages = get_flashed_messages() %}
   {% if messages %}

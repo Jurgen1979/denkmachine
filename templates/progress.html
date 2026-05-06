@@ -1,22 +1,28 @@
 {% extends "base.html" %}
 {% block title %}voortgang – {{ project.id[:8] }}{% endblock %}
 {% block content %}
-<h1>ingest-voortgang</h1>
-<p>project: <code>{{ project.id[:8] }}</code></p>
+<h1>pipeline-voortgang</h1>
+<p>project: <code>{{ project.id[:8] }}</code>{% if project.client_name %} &mdash; {{ project.client_name }}{% endif %}</p>
 
-<div
-  hx-get="{{ url_for('progress.progress_fragment', project_id=project.id) }}"
-  hx-trigger="every 5s"
-  hx-swap="outerHTML"
->
-  {% include "progress_fragment.html" %}
-</div>
+{% include "progress_fragment.html" %}
 
-{% if project.status == "ingested" %}
-<section>
-  <h2>klaar</h2>
-  <p>alle bronnen zijn verwerkt. de evidence-review-stap (sprint 3b) is nog niet beschikbaar.</p>
-  <p><a href="{{ url_for('upload.upload_view', project_id=project.id) }}">terug naar upload</a></p>
+{% if project.status == "awaiting_evidence_review" %}
+<section style="margin-top:1.5rem">
+  <h2>klaar voor review</h2>
+  <p>
+    <a href="{{ url_for('evidence.evidence_view', project_id=project.id) }}"
+       class="knop-primair">
+      ga naar evidence-review &rarr;
+    </a>
+  </p>
+</section>
+{% endif %}
+
+{% if project.status == "evidence_approved" %}
+<section style="margin-top:1.5rem">
+  <h2>evidence goedgekeurd</h2>
+  <p>volgende sprint (analist) is nog niet beschikbaar</p>
+  <p style="margin-top:0.5rem"><a href="{{ url_for('evidence.evidence_view', project_id=project.id) }}">bekijk evidence</a></p>
 </section>
 {% endif %}
 

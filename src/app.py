@@ -37,6 +37,7 @@ from src.state import init_db  # noqa: E402
 init_db()
 
 # flask-app aanmaken
+import json  # noqa: E402
 import os  # noqa: E402
 
 app = Flask(
@@ -89,6 +90,7 @@ def after_request(response):
 # blueprints registreren
 from src.routes.auth import auth_bp  # noqa: E402
 from src.routes.dashboard import dashboard_bp  # noqa: E402
+from src.routes.evidence import evidence_bp  # noqa: E402
 from src.routes.plan import plan_bp  # noqa: E402
 from src.routes.progress import progress_bp  # noqa: E402
 from src.routes.projects import projects_bp  # noqa: E402
@@ -100,5 +102,8 @@ app.register_blueprint(projects_bp)
 app.register_blueprint(plan_bp)
 app.register_blueprint(upload_bp)
 app.register_blueprint(progress_bp)
+app.register_blueprint(evidence_bp)
+
+app.jinja_env.filters["fromjson"] = json.loads
 
 logger.info("denkmachine opgestart")

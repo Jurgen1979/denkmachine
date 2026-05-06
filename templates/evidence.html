@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}evidence – {{ project.id[:8] }}{% endblock %}
+{% block content %}
+<h1>evidence-review</h1>
+<p>
+  project: <code>{{ project.id[:8] }}</code>
+  {% if project.client_name %} &nbsp;|&nbsp; klant: <strong>{{ project.client_name }}</strong>{% endif %}
+  &nbsp;|&nbsp; categorie: {{ project.primary_category or "–" }}
+  &nbsp;|&nbsp; status: <strong>{{ project.status }}</strong>
+</p>
+
+{% if project.status == "awaiting_evidence_review" %}
+<section>
+  <h2>bulk-acties</h2>
+  <form method="post" action="{{ url_for('evidence.evidence_bulk', project_id=project.id) }}">
+    <select name="action">
+      <option value="approve_all">alles goedkeuren</option>
+      <option value="approve_source">bron goedkeuren</option>
+      <option value="reject_all">alles afkeuren</option>
+    </select>
+    <select name="source">
+      <option value="">– kies bron –</option>
+      {% for sid in source_ids %}
+        <option value="{{ sid }}" {% if filters.source == sid %}selected{% endif %}>{{ sid }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">voer bulk uit</button>
+  </form>
+</section>
+{% endif %}
+
+<section>
+  <h2>filters</h2>
+  <p>
+    <a href="{{ url_for('evidence.evidence_view', project_id=project.id) }}">alle kaarten</a>
+    {% for sid in source_ids %}
+      | <a href="{{ url_for('evidence.evidence_view', project_id=project.id, source=sid) }}">{{ sid }}</a>
+    {% endfor %}
+  </p>
+  <p>
+    claim_type:
+    {% for ct in claim_types %}
+      <a href="{{ url_for('evidence.evidence_view', project_id=project.id, claim_type=ct, source=filters.source, tag=filters.tag, weak=filters.weak) }}">{{ ct }}</a>
+    {% endfor %}
+  </p>
+  <p>
+    tags:
+    {% for t in tags %}
+      <a href="{{ url_for('evidence.evidence_view', project_id=project.id, tag=t, source=filters.source, claim_type=filters.claim_type, weak=filters.weak) }}">{{ t }}</a>
+    {% endfor %}
+    &nbsp;|&nbsp;
+    {% if filters.weak == "1" %}
+      <a href="{{ url_for('evidence.evidence_view', project_id=project.id, source=filters.source, claim_type=filters.claim_type, tag=filters.tag) }}">toon alles</a>
+    {% else %}
+      <a href="{{ url_for('evidence.evidence_view', project_id=project.id, weak='1', source=filters.source, claim_type=filters.claim_type, tag=filters.tag) }}">alleen weak</a>
+    {% endif %}
+  </p>
+</section>
+
+<div
+  id="evidence-tabel"
+  hx-get="{{ url_for('evidence.evidence_fragment', project_id=project.id, source=filters.source, claim_type=filters.claim_type, tag=filters.tag, weak=filters.weak) }}"
+  hx-trigger="every 30s"
+  hx-swap="outerHTML"
+>
+  {% include "evidence_fragment.html" %}
+</div>
+
+{% if project.status == "awaiting_evidence_review" %}
+<section style="margin-top:2rem;padding:1rem;border:2px solid #1a1a1a;">
+  <h2>afsluiten</h2>
+  <form method="post" action="{{ url_for('evidence.evidence_approve_all_and_continue', project_id=project.id) }}">
+    <button type="submit">evidence goedgekeurd, ga door</button>
+  </form>
+  <p><small>alle nog-openstaande kaarten worden automatisch goedgekeurd.</small></p>
+</section>
+{% endif %}
+
+{% if project.status == "evidence_approved" %}
+<p style="margin-top:2rem;padding:1rem;background:#efe;border:1px solid #4a4;">
+  evidence is goedgekeurd. volgende stap (analist) komt in sprint 4.
+</p>
+{% endif %}
+
+<section style="margin-top:2rem;">
+  <h2>eigen kaart toevoegen</h2>
+  <form method="post" action="{{ url_for('evidence.evidence_add', project_id=project.id) }}">
+    <label>claim <input type="text" name="claim" style="width:40em" required></label><br>
+    <label>claim_type
+      <select name="claim_type">
+        {% for ct in ["observation","quote","interpretation","hypothesis","external_fact","competitive_claim","requirement","constraint","assumption","risk_signal","opportunity_signal","process_step","pain_point","user_need","reference_example"] %}
+          <option value="{{ ct }}">{{ ct }}</option>
+        {% endfor %}
+      </select>
+    </label><br>
+    <label>source_id <input type="text" name="source_id" value="manual" style="width:10em"></label><br>
+    <label>source_type
+      <select name="source_type">
+        {% for st in ["user_input","document","website","interview","competitor","external","domain_knowledge"] %}
+          <option value="{{ st }}">{{ st }}</option>
+        {% endfor %}
+      </select>
+    </label><br>
+    <label>confidence
+      <select name="confidence">
+        <option value="medium">medium</option>
+        <option value="high">high</option>
+        <option value="low">low</option>
+      </select>
+    </label><br>
+    <label>quote <input type="text" name="quote" style="width:40em"></label><br>
+    <label>context <input type="text" name="context" style="width:40em"></label><br>
+    <label>tags (kommagescheiden) <input type="text" name="tags" style="width:20em"></label><br>
+    <button type="submit">kaart toevoegen</button>
+  </form>
+</section>
+
+<p><a href="{{ url_for('dashboard.index') }}">&larr; terug naar dashboard</a></p>
+{% endblock %}

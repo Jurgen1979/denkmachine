@@ -10,6 +10,7 @@
         <th>id</th>
         <th>aangemaakt</th>
         <th>vraag</th>
+        <th>klant</th>
         <th>categorie</th>
         <th>status</th>
         <th>geschatte kost</th>
@@ -21,6 +22,7 @@
         <td><a href="{{ url_for('plan.plan_view', project_id=project.id) }}"><code>{{ project.id[:8] }}</code></a></td>
         <td>{{ project.created_at[:19].replace("T", " ") }}</td>
         <td>{{ project.user_question[:80] }}{% if project.user_question|length > 80 %}...{% endif %}</td>
+        <td>{{ project.client_name or "–" }}</td>
         <td>{{ project.primary_category or "–" }}</td>
         <td>{{ project.status }}</td>
         <td>{% if project.estimated_cost_eur %}&euro;{{ "%.2f"|format(project.estimated_cost_eur) }}{% else %}–{% endif %}</td>

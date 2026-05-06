@@ -1,5 +1,6 @@
 """database-initialisatie en sessiebeheer voor denkmachine."""
 
+import os
 from pathlib import Path
 
 from sqlalchemy import create_engine
@@ -10,7 +11,8 @@ _BASE_DIR = Path(__file__).parent.parent
 _DB_PATH = _BASE_DIR / "data" / "denkmachine.db"
 _DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
-DATABASE_URL = f"sqlite:///{_DB_PATH}"
+# DM_DB_URL kan overschreven worden door tests om de echte db te beschermen
+DATABASE_URL = os.environ.get("DM_DB_URL", f"sqlite:///{_DB_PATH}")
 
 engine = create_engine(DATABASE_URL, echo=False, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)

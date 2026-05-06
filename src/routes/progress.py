@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from flask import Blueprint, abort, render_template
+from flask import Blueprint, abort, redirect, render_template, url_for
 from flask_login import login_required
 
 from src.models import AgentCall, Flag, Project
@@ -93,6 +93,45 @@ def progress_view(project_id: str):
         total=total,
         pct=pct,
     )
+
+
+@progress_bp.route("/project/<project_id>/progress/restart", methods=["POST"])
+@login_required
+def progress_restart(project_id: str):
+    """Herstart de pipeline of alleen de bewijs-extractie voor dit project."""
+    from datetime import datetime, timezone
+
+    from src.background import start_extraction_thread, start_pipeline_thread
+
+    with get_session() as session:
+        project = session.get(Project, project_id)
+        if project is None:
+            abort(404)
+        status = project.status
+        now = datetime.now(timezone.utc).isoformat()
+
+        # controleer of ingested-bestanden beschikbaar zijn
+        ingested_dir = _PROJECTS_DIR / project_id / "ingested"
+        has_ingested = ingested_dir.exists() and any(
+            f for f in ingested_dir.glob("src_*.md")
+        )
+
+        if status in ("extracting_evidence", "ingested") and has_ingested:
+            # ingest is al klaar, alleen extractie herstarten
+            project.status = "ingested"
+            project.updated_at = now
+            session.commit()
+            start_extraction_thread(project_id)
+        elif status in ("ingesting", "failed") or (
+            status in ("extracting_evidence", "ingested") and not has_ingested
+        ):
+            # volledige pipeline herstarten (ook als ingested-bestanden ontbreken)
+            project.status = "plan_approved"
+            project.updated_at = now
+            session.commit()
+            start_pipeline_thread(project_id)
+
+    return redirect(url_for("progress.progress_view", project_id=project_id))
 
 
 @progress_bp.route("/project/<project_id>/progress/fragment")

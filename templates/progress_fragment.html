@@ -1,45 +1,90 @@
-<div>
-  <p>status: <strong>{{ project.status }}</strong></p>
-  <p>voortgang: {{ done }} van {{ total }} bronnen verwerkt ({{ pct }}%)</p>
+{% set bezig = project.status in ["ingesting", "extracting_evidence"] %}
+
+{% set status_label = {
+  "ingesting":               "bronnen worden gelezen en verwerkt",
+  "extracting_evidence":     "bewijs wordt geëxtraheerd",
+  "ingested":                "bronnen ingeladen",
+  "failed":                  "mislukt",
+  "awaiting_evidence_review":"klaar voor review",
+  "evidence_approved":       "evidence goedgekeurd"
+}.get(project.status, project.status) %}
+
+<div
+  {% if bezig %}
+  hx-get="{{ url_for('progress.progress_fragment', project_id=project.id) }}"
+  hx-trigger="every 5s"
+  hx-swap="outerHTML"
+  {% endif %}
+>
+
+  {% if bezig %}
+  <p class="bezig zichtbaar" style="margin-bottom:0.75rem">
+    <span class="spinner"></span>
+    <strong>{{ status_label }}</strong>
+  </p>
+  {% else %}
+  <p><strong>{{ status_label }}</strong></p>
+  {% endif %}
+
+  <p style="color:#555;font-size:0.875rem">{{ done }} van {{ total }} bronnen gelezen ({{ pct }}%)</p>
 
   {% if project.status == "failed" %}
-    <p>de pipeline is mislukt.</p>
+    <p style="color:#b00;margin-top:0.5rem">de pipeline is mislukt.</p>
     {% if flags %}
-      <h3>vlaggen</h3>
-      <ul>
+      <ul style="margin-top:0.5rem">
         {% for flag in flags %}
           <li>[{{ flag.severity }}] {{ flag.type }}: {{ flag.description }}</li>
         {% endfor %}
       </ul>
     {% endif %}
-    <p><button disabled title="herstart nog niet beschikbaar in deze versie">herstart pipeline</button></p>
+  {% endif %}
+
+  {% if project.status in ("awaiting_evidence_review", "evidence_approved") %}
+    <p style="margin-top:1rem">
+      <a href="{{ url_for('evidence.evidence_view', project_id=project.id) }}"
+         style="display:inline-block;padding:0.5rem 1.2rem;background:#1a1a1a;color:#fff;text-decoration:none;border-radius:3px">
+        ga naar bewijs-review &rarr;
+      </a>
+    </p>
+  {% endif %}
+
+  {% if project.status in ("ingested", "extracting_evidence", "failed", "ingesting") %}
+    <form method="post" action="{{ url_for('progress.progress_restart', project_id=project.id) }}"
+          style="margin-top:0.75rem">
+      <button type="submit">
+        {% if project.status == "extracting_evidence" %}herstart bewijs-extractie
+        {% elif project.status == "ingested" %}start bewijs-extractie
+        {% else %}herstart pipeline{% endif %}
+      </button>
+    </form>
   {% endif %}
 
   {% if calls %}
-    <h3>log (laatste {{ calls|length }})</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>tijdstip</th>
-          <th>agent</th>
-          <th>bron</th>
-          <th>duur (ms)</th>
-          <th>status</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for call in calls %}
+    <details style="margin-top:1.25rem">
+      <summary style="cursor:pointer;font-size:0.875rem;color:#555">technisch log (laatste {{ calls|length }} stappen)</summary>
+      <table style="margin-top:0.75rem">
+        <thead>
           <tr>
-            <td>{{ call.timestamp[:19] }}</td>
-            <td>{{ call.agent_name }}</td>
-            <td>{{ call.role_name or "-" }}</td>
-            <td>{{ call.duration_ms if call.duration_ms is not none else "-" }}</td>
-            <td>{{ call.status or "-" }}</td>
+            <th>tijdstip</th>
+            <th>stap</th>
+            <th>bron</th>
+            <th>duur (ms)</th>
+            <th>status</th>
           </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  {% else %}
-    <p>nog geen log-entries</p>
+        </thead>
+        <tbody>
+          {% for call in calls %}
+            <tr>
+              <td>{{ call.timestamp[11:19] }}</td>
+              <td>{{ call.agent_name }}</td>
+              <td>{{ call.role_name or "-" }}</td>
+              <td>{{ call.duration_ms if call.duration_ms is not none else "…" }}</td>
+              <td>{{ call.status or "-" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </details>
   {% endif %}
+
 </div>

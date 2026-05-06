@@ -12,6 +12,9 @@
   <label for="user_context">extra context (optioneel)</label>
   <textarea id="user_context" name="user_context" rows="4"></textarea>
 
+  <label for="client_name">klantnaam (optioneel, voor jezelf, niet doorgegeven aan ai)</label>
+  <input type="text" id="client_name" name="client_name">
+
   <label for="category_hint">categorie-hint (optioneel)</label>
   <select id="category_hint" name="category_hint">
     <option value="">geen hint</option>
@@ -24,9 +27,6 @@
     <option value="planning">planning</option>
     <option value="creatief_concept">creatief concept</option>
   </select>
-
-  <label for="client_name">klant (optioneel)</label>
-  <input type="text" id="client_name" name="client_name">
 
   <button type="submit" id="submit-knop">aanmaken en analyseren</button>
   <div class="bezig htmx-indicator" id="laad-indicator">

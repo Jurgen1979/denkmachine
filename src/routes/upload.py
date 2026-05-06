@@ -16,7 +16,7 @@ from flask_login import login_required
 from loguru import logger
 from werkzeug.utils import secure_filename
 
-from src.background import start_ingest_thread
+from src.background import start_pipeline_thread
 from src.models import Project
 from src.state import get_session
 
@@ -194,6 +194,6 @@ def upload_start(project_id: str):
 
     logger.info(f"ingest gestart: project={project_id}")
 
-    start_ingest_thread(project_id)
+    start_pipeline_thread(project_id)
 
     return redirect(url_for("progress.progress_view", project_id=project_id))

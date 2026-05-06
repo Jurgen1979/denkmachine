@@ -1,21 +1,20 @@
 /* denkmachine – client-side helpers */
 
 document.addEventListener('DOMContentLoaded', function () {
-  /* laad-indicator voor formulieren die een llm-call triggeren */
-  var forms = [
-    { formId: 'nieuw-form',   knapId: 'submit-knop',   indicatorId: 'laad-indicator'   },
-    { formId: 'verfijn-form', knapId: 'verfijn-knop',  indicatorId: 'verfijn-indicator' },
-  ];
+  // globale laad-indicator: elke form-submit blokkeert de knop en toont een spinner
+  document.addEventListener('submit', function (event) {
+    var form = event.target;
 
-  forms.forEach(function (cfg) {
-    var form = document.getElementById(cfg.formId);
-    if (!form) return;
+    // zoek de submit-knop die nog niet uitgeschakeld is
+    var knop = form.querySelector('button[type="submit"]:not([disabled])');
+    if (!knop) knop = form.querySelector('button:not([type]):not([disabled])');
+    if (!knop) return;
 
-    form.addEventListener('submit', function () {
-      var knop = document.getElementById(cfg.knapId);
-      var indicator = document.getElementById(cfg.indicatorId);
-      if (knop) knop.disabled = true;
-      if (indicator) indicator.classList.add('zichtbaar');
-    });
+    var origTekst = knop.textContent.trim();
+    knop.disabled = true;
+    knop.style.display = 'inline-flex';
+    knop.style.alignItems = 'center';
+    knop.style.gap = '0.45rem';
+    knop.innerHTML = '<span class="spinner-knop"></span>' + origTekst + '\u2026';
   });
 });

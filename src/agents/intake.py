@@ -10,6 +10,7 @@ from src.agents.base import Agent
 from src.prompts import load_prompt, render_prompt
 from src.schemas.plan import IntakePlan
 from src.state import get_session
+from src.utils import load_yaml
 
 _BASE_DIR = Path(__file__).parent.parent.parent
 _PROJECTS_DIR = _BASE_DIR / "projects"
@@ -40,6 +41,12 @@ class IntakeAgent(Agent):
         plan_path.parent.mkdir(parents=True, exist_ok=True)
         plan_path.write_text(plan.model_dump_json(indent=2), encoding="utf-8")
 
+    def _build_available_output_types(self) -> str:
+        """Geef een kommalijst van beschikbare output-types."""
+        data = load_yaml(str(_BASE_DIR / "config" / "output_types.yaml"))
+        keys = list(data.get("output_types", {}).keys())
+        return ", ".join(keys)
+
     def run(
         self,
         previous_plan: dict,
@@ -50,6 +57,7 @@ class IntakeAgent(Agent):
         prompt = render_prompt(template, {
             "previous_plan": json.dumps(previous_plan, ensure_ascii=False, indent=2),
             "user_answers": json.dumps(user_answers, ensure_ascii=False, indent=2),
+            "available_output_types": self._build_available_output_types(),
         })
 
         raw = self._call_llm(profile="reasoning_model", user_prompt=prompt)

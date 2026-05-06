@@ -49,18 +49,28 @@ class LLMClient:
         retry=retry_if_exception(_is_retryable),
         reraise=True,
     )
-    def _call_model(self, model: str, messages: list, max_tokens: int, temperature: float) -> dict:
+    def _call_model(
+        self,
+        model: str,
+        messages: list,
+        max_tokens: int,
+        temperature: float,
+        response_format: dict | None = None,
+    ) -> dict:
         """Doe een enkele http-call naar openrouter, met retry op 5xx en timeouts."""
+        payload: dict = {
+            "model": model,
+            "messages": messages,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+        }
+        if response_format is not None:
+            payload["response_format"] = response_format
         with httpx.Client(timeout=_TIMEOUT_SECONDS) as client:
             response = client.post(
                 _OPENROUTER_URL,
                 headers=self._get_headers(),
-                json={
-                    "model": model,
-                    "messages": messages,
-                    "max_tokens": max_tokens,
-                    "temperature": temperature,
-                },
+                json=payload,
             )
             response.raise_for_status()
             return response.json()
@@ -110,6 +120,7 @@ class LLMClient:
         project_id: str = "ping",
         agent_name: str = "ping",
         role_name: str | None = None,
+        response_format: dict | None = None,
     ) -> dict:
         """
         Stuur berichten naar het opgegeven model-profiel en geef het resultaat terug.
@@ -132,7 +143,9 @@ class LLMClient:
         model_used = primary_model
 
         try:
-            raw = self._call_model(primary_model, messages, effective_max_tokens, temperature)
+            raw = self._call_model(
+                primary_model, messages, effective_max_tokens, temperature, response_format
+            )
         except Exception as primary_exc:
             duration_ms = int((time.time() - start) * 1000)
             logger.warning(
@@ -154,7 +167,7 @@ class LLMClient:
             start = time.time()
             model_used = fallback_model
             raw = self._call_model.__wrapped__(
-                self, fallback_model, messages, effective_max_tokens, temperature
+                self, fallback_model, messages, effective_max_tokens, temperature, response_format
             )
 
         duration_ms = int((time.time() - start) * 1000)

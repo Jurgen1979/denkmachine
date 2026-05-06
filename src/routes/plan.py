@@ -43,6 +43,12 @@ def _has_cost_flag(project_id: str) -> bool:
     return flag is not None
 
 
+_PIPELINE_STATUSES = {
+    "ingesting", "ingested", "extracting_evidence",
+    "awaiting_evidence_review", "evidence_approved", "failed",
+}
+
+
 @plan_bp.route("/project/<project_id>/plan")
 @login_required
 def plan_view(project_id: str):
@@ -52,6 +58,12 @@ def plan_view(project_id: str):
 
     if project is None:
         abort(404)
+
+    # stuur door naar de juiste pagina als de pipeline al gestart is
+    if project.status in {"awaiting_evidence_review", "evidence_approved"}:
+        return redirect(url_for("evidence.evidence_view", project_id=project_id))
+    if project.status in {"ingesting", "ingested", "extracting_evidence", "failed"}:
+        return redirect(url_for("progress.progress_view", project_id=project_id))
 
     plan = _load_plan_json(project_id)
     hard_cap, alert_at = get_cost_caps()
